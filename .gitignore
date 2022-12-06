@@ -1,0 +1,9 @@
+.idea/
+env/
+.vscode/
+node_modules/
+build/
+tmp/
+temp/
+docker/
+dist/
