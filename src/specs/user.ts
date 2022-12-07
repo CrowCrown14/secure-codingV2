@@ -2,6 +2,7 @@
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
 import { QueryFailedError } from 'typeorm/error/QueryFailedError'
+import { ValidationError } from '../error/ValidationError'
 import { User } from '../entities/User'
 import { AppDataSource } from '../lib/typeorm'
 
@@ -63,7 +64,7 @@ describe('User', function () {
       })
       
       // hint to check if a promise fails with chai + chai-as-promise:
-      await chai.expect(user.save(test)).to.eventually.be.rejectedWith(QueryFailedError, "null value in column \"email\" of relation \"user\" violates not-null constraint")
+      await chai.expect(user.save(test)).to.eventually.be.rejectedWith(ValidationError)
     })
   })
 })
