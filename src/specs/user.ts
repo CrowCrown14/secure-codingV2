@@ -1,6 +1,7 @@
 // src/specs/entities/user.ts
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
+import { QueryFailedError } from 'typeorm/error/QueryFailedError'
 import { User } from '../entities/User'
 import { AppDataSource } from '../lib/typeorm'
 
@@ -9,10 +10,8 @@ chai.use(chaiAsPromised)
 describe('User', function () {
   before(async function () {
     // TODO: initialise the datasource (database connection)
+    await AppDataSource.initialize()
 
-    const appDataSource = await AppDataSource.initialize()
-    
-    return appDataSource
   })
     
   beforeEach(async function () {
@@ -53,8 +52,18 @@ describe('User', function () {
     })
 
     it('should raise error if email is missing', async function () {
+      
+      const user = AppDataSource.getRepository(User)
+
+      const test = user.create({
+        firstName : "firstName",
+        lastName : "lastName",
+        email : undefined,
+        age : 25,
+      })
+      
       // hint to check if a promise fails with chai + chai-as-promise:
-      //await chai.expect(promise).to.eventually.be.rejectedWith(QueryFailedError, "message")
+      await chai.expect(user.save(test)).to.eventually.be.rejectedWith(QueryFailedError, "null value in column \"email\" of relation \"user\" violates not-null constraint")
     })
   })
 })
