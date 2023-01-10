@@ -1,6 +1,7 @@
 // src/specs/entities/user.ts
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
+import { DataSource } from 'typeorm'
 import { User } from '../entities/User'
 import { AppDataSource } from '../lib/typeorm'
 
@@ -10,7 +11,7 @@ describe('User', function () {
   before(async function () {
     // TODO: initialise the datasource (database connection)
     await AppDataSource.initialize()
-
+    await cleanupWith("truncation")
   })
     
   beforeEach(async function () {
@@ -18,6 +19,17 @@ describe('User', function () {
     await AppDataSource.manager.clear(User) 
 
   })
+
+  async function cleanupWith(mode : 'truncation' | 'deletion') {
+    const entities = AppDataSource.entityMetadatas
+
+    if ( mode == 'truncation') {
+      entities.forEach(entity => async () => {
+        await AppDataSource.query('SET FOREIGN_KEY_CHECKS = 0; TRUNCADE TABLE ${entity}',entities)
+      });
+      
+    }
+  }
 
   describe('validations', function () {
 

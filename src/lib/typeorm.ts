@@ -6,14 +6,23 @@ require('dotenv').config()
 
 export const AppDataSource = new DataSource({
     type: "postgres",
-    host: process.env.DB_HOST,
+    host: testUndefined("DB_HOST"),
     port: 5432,
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
+    username: testUndefined("DB_USERNAME"),
+    password: testUndefined("DB_PASSWORD"),
+    database: testUndefined("DB_DATABASE"),
     synchronize: true,
     logging: true,
     entities: [User],
     migrations: [],
     subscribers: [],
 })
+
+function testUndefined(value:string) {
+    const val = process.env[value]
+    
+    if (val === 'undefined') {
+        throw new SyntaxError("Undefined value");
+    }
+    return process.env[value]
+}
