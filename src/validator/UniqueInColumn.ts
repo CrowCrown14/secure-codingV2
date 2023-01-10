@@ -5,6 +5,12 @@ import { AppDataSource } from '../lib/typeorm'
 @ValidatorConstraint({ async: true })
 export class UniqueInColumnConstraint implements ValidatorConstraintInterface {
     
+    private repo: String
+
+    constructor(mail: string,repo: string) {
+        this.repo = repo
+    }
+
     validate(mail: string, args: ValidationArguments) {
 
         const result = AppDataSource
