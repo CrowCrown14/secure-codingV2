@@ -1,9 +1,10 @@
 // src/specs/entities/user.ts
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
+import { validate } from "class-validator"
 import { QueryFailedError } from 'typeorm/error/QueryFailedError'
-import { ValidationError } from '../error/ValidationError'
 import { User } from '../entities/User'
+import { ValidationError } from '../error/ValidationError'
 import { AppDataSource } from '../lib/typeorm'
 
 chai.use(chaiAsPromised)
@@ -62,11 +63,43 @@ describe('User', function () {
         email : undefined,
         age : 25,
       })
+
+      // const test = new User()
+      // test.firstName = "firstName"
+      // test.lastName = "lastName",
+      // test.email = "",
+      // test.age = 25
       
       // hint to check if a promise fails with chai + chai-as-promise:
       await chai.expect(user.save(test)).to.eventually
-        .be.rejectedWith(ValidationError, "The email is required")
-        .and.include({ target: test, property: 'email'})
+        .be.rejected.and.deep.include({
+          target: test,
+          property: 'email',
+          constraints: { isEmail: 'email must be an email' }
+        })
+    })
+
+    it('should raise error if 2 same email', async function () {
+      
+      const user = AppDataSource.getRepository(User)
+
+      const user1 = user.create({
+        firstName : "A",
+        lastName : "A",
+        email : "same@email.com",
+        age : 22,
+      })
+
+      user.save(user1)
+
+      const user2 = user.create({
+        firstName : "B",
+        lastName : "B",
+        email : "same@email.com",
+        age : 25,
+      })
+
+      await chai.expect(user.save(user2)).to.eventually.be.rejected
     })
   })
 })
