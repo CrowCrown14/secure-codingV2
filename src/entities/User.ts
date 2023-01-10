@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, BeforeUpdate, BeforeInsert } from "typeorm"
+import { ValidationError } from "../error/ValidationError"
 
 @Entity()
 export class User {
@@ -18,4 +19,11 @@ export class User {
     @Column({nullable : false})
     age!: number
 
+    @BeforeInsert()
+    @BeforeUpdate()
+    emailEmpty() {
+        if (this.email == null || this.email == "") {
+            throw new ValidationError("The email is required",this,"email");
+        }
+    }
 }

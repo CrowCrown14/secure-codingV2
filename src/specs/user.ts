@@ -64,7 +64,9 @@ describe('User', function () {
       })
       
       // hint to check if a promise fails with chai + chai-as-promise:
-      await chai.expect(user.save(test)).to.eventually.be.rejectedWith(ValidationError)
+      await chai.expect(user.save(test)).to.eventually
+        .be.rejectedWith(ValidationError, "The email is required")
+        .and.include({ target: test, property: 'email'})
     })
   })
 })
