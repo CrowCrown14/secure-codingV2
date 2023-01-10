@@ -1,10 +1,7 @@
 // src/specs/entities/user.ts
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
-import { validate } from "class-validator"
-import { QueryFailedError } from 'typeorm/error/QueryFailedError'
 import { User } from '../entities/User'
-import { ValidationError } from '../error/ValidationError'
 import { AppDataSource } from '../lib/typeorm'
 
 chai.use(chaiAsPromised)
@@ -99,7 +96,12 @@ describe('User', function () {
         age : 25,
       })
 
-      await chai.expect(user.save(user2)).to.eventually.be.rejected
+      await chai.expect(user.save(user2)).to.eventually
+        .be.rejected.and.deep.include({
+        target: test,
+        property: 'email',
+        constraints: { UniqueInColumnConstraint: "Email can't be duplicate" }
+        })
     })
   })
 })

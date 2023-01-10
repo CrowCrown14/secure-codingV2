@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate, Unique } from "typeorm"
 import { Min, IsEmail, Validate } from "class-validator"
 import { validate } from "class-validator"
+import { UniqueInColumn } from "../validator/UniqueInColumn"
 
 @Entity()
 export class User {
@@ -15,6 +16,7 @@ export class User {
     lastName!: string
 
     @IsEmail()
+    @UniqueInColumn({message :"Email can't be duplicate"})
     @Column({nullable : false, unique : true})
     email!: string
 
