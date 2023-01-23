@@ -1,9 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate, Unique } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate, Unique, ReturningStatementNotSupportedError } from "typeorm"
 import { Min, IsEmail, Validate } from "class-validator"
 import { validate } from "class-validator"
 import { UniqueInColumn } from "../validator/UniqueInColumn"
-import { AppDataSource } from "../lib/typeorm"
-import { stringify } from "querystring"
 import { SemanticError } from "../error/SemanticError"
 
 
@@ -28,7 +26,7 @@ export class User {
     @Min(0)
     age!: number
 
-    @Column()
+    @Column({nullable : true})
     passwordHash!: string
 
     @BeforeInsert()
@@ -45,8 +43,10 @@ export class User {
     async setPassword(password: string, passwordConfirmation: string) {
         const bcrypt = require('bcrypt')
         if (password === passwordConfirmation) {
-            bcrypt.hash(password, 10, function(err : Error,hash: string) {
-                
+            bcrypt.hash(password, 10, (err : Error,hash: string) => {
+                if (err == undefined) {
+                    this.passwordHash = hash
+                }
             })
         }
         else {

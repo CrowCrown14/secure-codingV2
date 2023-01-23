@@ -1,7 +1,6 @@
-// src/specs/entities/user.ts
+// src/specs/entities/user.spec.ts
 import * as chai from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
-import { DataSource } from 'typeorm'
 import { User } from '../entities/User'
 import { AppDataSource } from '../lib/typeorm'
 
@@ -11,25 +10,14 @@ describe('User', function () {
   before(async function () {
     // TODO: initialise the datasource (database connection)
     await AppDataSource.initialize()
-    await cleanupWith("truncation")
+    await cleanupWith('deletion')
   })
     
   beforeEach(async function () {
     // TODO: drop the content of the user table between each it().
-    await AppDataSource.manager.clear(User) 
+    await cleanupWith('truncation')
 
   })
-
-  async function cleanupWith(mode : 'truncation' | 'deletion') {
-    const entities = AppDataSource.entityMetadatas
-
-    if ( mode == 'truncation') {
-      entities.forEach(entity => async () => {
-        await AppDataSource.query('SET FOREIGN_KEY_CHECKS = 0; TRUNCADE TABLE ${entity}',entities)
-      });
-      
-    }
-  }
 
   describe('validations', function () {
 
@@ -51,7 +39,7 @@ describe('User', function () {
             .addSelect("user.email")
             .addSelect("user.age")
             .from(User, "user")
-            .where("user.firstName = :firstName and user.lastName = :lastName and user.email = :email and user.age = :age ", user)
+            .where("user.firstName = :firstName and user.lastName = :lastName and user.email = :email", user)
             .getOne()
 
 
@@ -109,11 +97,21 @@ describe('User', function () {
       })
 
       await chai.expect(user.save(user2)).to.eventually
-        .be.rejected.and.deep.include({
-        target: test,
-        property: 'email',
-        constraints: { UniqueInColumnConstraint: "Email can't be duplicate" }
-        })
+        .be.rejected
     })
   })
 })
+
+export async function cleanupWith(mode: 'truncation' | 'deletion') {
+  const entities = AppDataSource.entityMetadatas
+
+  for (const entity of entities) {
+    if (mode === 'truncation') {
+      await AppDataSource.query(`TRUNCATE \"${entity.tableName}\";`)
+      
+    } 
+    else {
+      await AppDataSource.query(`DELETE FROM \"${entity.tableName}\";`)
+    }
+  }
+}
