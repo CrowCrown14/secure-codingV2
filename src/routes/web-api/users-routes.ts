@@ -32,10 +32,13 @@ export async function userRoutes(fastify: FastifyInstance) {
     }
     ),
     fastify.get<{ Params : String }>('/:id',
+    {
+        schema: {
+            params: userCreateResponseBody
+        }
+    },
     async (request : FastifyRequest, reply : FastifyReply) => {
         const params = request.params
-
-        console.log({id : request.params})
 
         if (params != undefined) {
             const userInDatabase = await AppDataSource
