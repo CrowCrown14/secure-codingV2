@@ -1,10 +1,10 @@
 
 import { validate } from "class-validator";
-import { FastifyInstance } from "fastify";
+import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { User } from "../../entities/User";
 import { AppDataSource } from "../../lib/typeorm";
 import { UserCreateRequestBody, userCreateRequestBody } from "../../schema/userCreateRequestBody";
-import { userCreateResponseBody } from "../../schema/userCreateResponseBody";
+import { UserCreateResponseBody, userCreateResponseBody } from "../../schema/userCreateResponseBody";
 
 export async function userRoutes(fastify: FastifyInstance) {
     fastify.post<{ Body: UserCreateRequestBody }>('/', 
@@ -29,6 +29,45 @@ export async function userRoutes(fastify: FastifyInstance) {
         await AppDataSource.manager.save(user)
         
         reply.status(200).send({ response : "user created" });
+    }
+    ),
+    fastify.get<{ Params : String }>('/:id',
+    async (request : FastifyRequest, reply : FastifyReply) => {
+        const params = request.params
+
+        console.log({id : request.params})
+
+        if (params != undefined) {
+            const userInDatabase = await AppDataSource
+            .getRepository(User)
+            .createQueryBuilder()
+            .select("user.id")
+            .addSelect("user.lastName")
+            .addSelect("user.firstName")
+            .addSelect("user.email")
+            .from(User, "user")
+            .where("user.id = :id", params)
+            .getOne()
+            
+            
+            const response = {
+                id : userInDatabase?.id,
+                firstName : userInDatabase?.firstName,
+                lastName : userInDatabase?.lastName,
+                email : userInDatabase?.email
+            }
+
+            if (userInDatabase != null) {
+                reply.status(200).send(response)
+            }
+            else {
+                reply.status(500).send("User doesn't exist")
+            }
+        }
+        else {
+            reply.status(500).send("Parameter is undefined")
+        }
+        
     }
     )
 }
