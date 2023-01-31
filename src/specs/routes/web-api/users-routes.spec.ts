@@ -73,4 +73,24 @@ describe('/web-api/users', function () {
       chai.expect(responseJSON.email).equal(supposedResponse.email)
     })
   })
+
+  describe('POST validationError', function () {
+    it('should register the user', async function () {
+
+      const response = await server.inject({ url: `/web-api/users`, method: 'POST', payload: {
+        firstName: "test",
+        lastName: "test2",
+        email: "",
+        password: "test",
+        passwordConfirmation: "test"
+      } })
+
+      const responseJSON = JSON.parse(response.body)
+
+      chai.expect(response.statusCode).equal(400)
+      chai.expect(responseJSON.error).equal('Bad request')
+      chai.expect(responseJSON.message).equal('Bad request')
+      
+    })
+  })
 })

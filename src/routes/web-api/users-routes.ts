@@ -67,9 +67,6 @@ export async function userRoutes(fastify: FastifyInstance) {
                 reply.status(500).send("User doesn't exist")
             }
         }
-        else {
-            reply.status(500).send("Parameter is undefined")
-        }
         
     }
     )
