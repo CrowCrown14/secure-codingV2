@@ -27,12 +27,15 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
+      - name: build docker
+        run : docker build .\Dockerfile
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           push: true
-          tags: projetsecurecoding:lastest
+          tags: projetsecurecoding:1.0
           file: ./Dockerfile
 
       # - name: Use Docker
