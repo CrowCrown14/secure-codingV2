@@ -32,8 +32,8 @@ jobs:
         with:
           context: .
           push: true
-          tags: test-docker-image:lastest
-          file: ./Dockerfile
+          build-args: |
+            TZ=Europe/Paris
 
       # - name: Use Docker
       #   run: docker compose up
