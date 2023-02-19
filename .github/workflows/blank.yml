@@ -32,6 +32,8 @@ jobs:
         with:
           context: .
           push: true
+          tags: projetsecurecoding:lastest
+          file: ./Dockerfile
 
       # - name: Use Docker
       #   run: docker compose up
