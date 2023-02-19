@@ -20,14 +20,38 @@ jobs:
     # The type of runner that the job will run on
     name: Build and Test
     runs-on: ubuntu-latest
+    container:
+      version: '3.1'
+
+      services:
+        postgres:
+          image: postgres
+          environment:
+            POSTGRES_USER: tutorial
+            POSTGRES_DB: iam
+            POSTGRES_PASSWORD: privatepassword
+          ports:
+            - 127.0.0.1:5432:5432
+          volumes:
+            - ./docker/postgres:/var/lib/postgresql/data
+
+        pgadmin:
+          image: dpage/pgadmin4
+          links:
+            - postgres
+          environment:
+            PGADMIN_DEFAULT_EMAIL: admin@admin.com
+            PGADMIN_DEFAULT_PASSWORD: privatepassword
+          ports:
+            - 127.0.0.1:8000:80
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-      - name: Use Docker
-        run: docker compose up
+      # - name: Use Docker
+      #   run: docker compose up
 
       - name: npm ci
         run : npm ci
