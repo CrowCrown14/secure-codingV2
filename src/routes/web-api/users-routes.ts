@@ -1,5 +1,3 @@
-
-import { validate } from "class-validator";
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { User } from "../../entities/User";
 import { AppDataSource } from "../../lib/typeorm";

@@ -1,6 +1,6 @@
 import { FromSchema } from 'json-schema-to-ts'
 
-const userCreateSessionRequestBody = {
+export const userCreateSessionRequestBody = {
     "title": "userCreateSessionRequestBody",
     "type": "object",
     "properties": {
@@ -11,6 +11,6 @@ const userCreateSessionRequestBody = {
             "type": "string"
         }
     },
-  } as const;
+} as const;
 
-  export type UserCreateSessionRequestBody = FromSchema<typeof userCreateSessionRequestBody>
+export type UserCreateSessionRequestBody = FromSchema<typeof userCreateSessionRequestBody>

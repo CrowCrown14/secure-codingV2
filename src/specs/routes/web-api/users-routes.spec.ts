@@ -13,7 +13,7 @@ describe('/web-api/users', function () {
   })
     
   beforeEach(async function () {
-    await cleanupWith('truncation')
+    await cleanupWith('deletion')
   })
 
   describe('POST #create', function () {

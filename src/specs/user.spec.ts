@@ -10,12 +10,12 @@ describe('User', function () {
   before(async function () {
     // TODO: initialise the datasource (database connection)
     await AppDataSource.initialize()
-    await cleanupWith('deletion')
+    // await cleanupWith('deletion')
   })
     
   beforeEach(async function () {
     // TODO: drop the content of the user table between each it().
-    await cleanupWith('truncation')
+    await cleanupWith('deletion')
 
   })
 
@@ -107,7 +107,7 @@ export async function cleanupWith(mode: 'truncation' | 'deletion') {
 
   for (const entity of entities) {
     if (mode === 'truncation') {
-      await AppDataSource.query(`TRUNCATE \"${entity.tableName}\";`)
+      await AppDataSource.query(`TRUNCATE CASCADE \"${entity.tableName}\";`)
       
     } 
     else {

@@ -39,6 +39,9 @@ import { server } from './lib/fastify'
 
 async function run() {
   await AppDataSource.initialize()
+
+  
+
   await server.listen({ port: FASTIFY_PORT, host: FASTIFY_ADDR })
 }
 
