@@ -20,13 +20,20 @@ jobs:
     # The type of runner that the job will run on
     name: Build and Test
     runs-on: ubuntu-latest
-    container: [node:latest, postgres:latest]
       
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: test-docker-image:lastest
+          file: ./Dockerfile
 
       # - name: Use Docker
       #   run: docker compose up
