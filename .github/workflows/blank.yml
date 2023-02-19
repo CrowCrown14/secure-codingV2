@@ -20,7 +20,7 @@ jobs:
     # The type of runner that the job will run on
     name: Build and Test
     runs-on: ubuntu-latest
-    container: node:latest, postgres:latest
+    container: [node:latest, postgres:latest]
       
 
     # Steps represent a sequence of tasks that will be executed as part of the job
