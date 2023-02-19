@@ -2,8 +2,9 @@ name: Docker Compose
 
 on:
   push:
-    branches:
-      - [ "master", "CDCI" ]
+    branches: [ "master", "CDCI" ]
+  pull_request:
+    branches: [ "master", "CDCI" ]
 
 services:
   postgres:
