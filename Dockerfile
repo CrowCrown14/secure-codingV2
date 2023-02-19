@@ -4,8 +4,9 @@ FROM ubuntu:latest
 # Met à jour les packages de base
 RUN apt-get update && apt-get upgrade -y
 
-ENV tzdata=Europe/Paris
+ENV TZ=Europe/Paris
 
+RUN apt-get -y install tzdata
 # Installe PostgreSQL
 RUN apt-get install postgresql -y
 
