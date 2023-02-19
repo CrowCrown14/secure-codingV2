@@ -3,7 +3,7 @@ name: Docker Compose
 on:
   push:
     branches:
-      - master
+      - [ "master", "CDCI" ]
 
 services:
   postgres:
