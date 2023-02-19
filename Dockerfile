@@ -10,6 +10,8 @@ RUN apt-get -y install tzdata
 # Installe PostgreSQL
 RUN apt-get install postgresql -y
 
+RUN apt-get 
+
 # Définit l'utilisateur et le mot de passe par défaut pour PostgreSQL
 ENV POSTGRES_USER tutorial
 ENV POSTGRES_PASSWORD privatepassword
@@ -22,3 +24,17 @@ EXPOSE 5432
 
 # Démarre PostgreSQL et pgAdmin4
 CMD service postgresql start
+
+FROM node:14
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 3000
+
+CMD [ "npm", "start" ]
