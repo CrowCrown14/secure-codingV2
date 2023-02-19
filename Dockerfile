@@ -10,6 +10,7 @@ RUN apt-get install postgresql -y
 # Définit l'utilisateur et le mot de passe par défaut pour PostgreSQL
 ENV POSTGRES_USER tutorial
 ENV POSTGRES_PASSWORD privatepassword
+ENV TZ=Europe/Paris
 
 # Copie le script d'initialisation de PostgreSQL
 COPY init-postgres.sh /docker-entrypoint-initdb.d/
