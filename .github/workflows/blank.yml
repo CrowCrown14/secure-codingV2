@@ -11,8 +11,28 @@ on:
     branches: [ "master", "CDCI" ]
 
   # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
 
+services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: tutorial
+      POSTGRES_DB: iam
+      POSTGRES_PASSWORD: privatepassword
+    ports:
+      - 5432:5432
+    volumes:
+      - ./docker/postgres:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    links:
+      - postgres
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: privatepassword
+    ports:
+      - 8000:80
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -25,21 +45,10 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          push: true
-          tags: docker.io/library/projetsecurecoding:1.0
-          file: ./Dockerfile
-
-      # - name: Use Docker
-      #   run: docker compose up
-
-      - name: npm ci
-        run : npm ci
+      - name: Build and run Docker Compose
+        run: docker-compose up --build --detach
 
       - name: build
         run: npm run build
