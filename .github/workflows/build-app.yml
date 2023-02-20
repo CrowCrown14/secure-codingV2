@@ -17,9 +17,7 @@ jobs:
           POSTGRES_DB: iam
           POSTGRES_PASSWORD: privatepassword
         ports:
-          - 127.0.0.1:5432:5432
-        volumes:
-          - ./docker/postgres:/var/lib/postgresql/data
+          - 5432:5432
 
     runs-on: ubuntu-latest
 
