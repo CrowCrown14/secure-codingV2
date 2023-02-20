@@ -7,12 +7,33 @@ on:
   pull_request:
     branches: [ "master", "CDCI" ]
 
-services:
-  postgres:
-    image: postgres
-    ports:
-      - 5432:5432
-    env:
-      POSTGRES_PASSWORD: tutorial
-      POSTGRES_USER: iam
-      POSTGRES_DB: privatepassword
+jobs:
+  build:
+    services:
+      postgres:
+        image: postgres
+        environment:
+          POSTGRES_USER: tutorial
+          POSTGRES_DB: iam
+          POSTGRES_PASSWORD: privatepassword
+        ports:
+          - 127.0.0.1:5432:5432
+        volumes:
+          - ./docker/postgres:/var/lib/postgresql/data
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+        
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: npm ci
+    - run: npm run build --if-present
+    - run: npm test
