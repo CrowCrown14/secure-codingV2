@@ -14,10 +14,10 @@ env:
   DB_NAME: ${{ secrets.DB_NAME }}
   DB_HOST: ${{ secrets.DB_HOST }}
   DB_PORT: ${{ secrets.DB_PORT }}
-  DB_USERNAME: "tutorial"
-  DB_PASSWORD: "privatepassword"
-  DB_DATABASE: "iam"
-  SERVER_PORT: "8080"
+  DB_USERNAME: ${{ secrets.DB_USERNAME }}
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  DB_DATABASE: ${{ secrets.DB_DATABASE }}
+  SERVER_PORT: ${{ secrets.SERVER_PORT }}
 
 
 jobs:
