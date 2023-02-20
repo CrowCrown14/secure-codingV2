@@ -12,6 +12,7 @@ on:
 
 
 jobs:
+  name: docker
   docker:
     runs-on: ubuntu-latest
     steps:
@@ -33,3 +34,32 @@ jobs:
         with:
           push: true
           tags: shyu93/projectsecurecoding:latest
+  name: build
+  build:
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: tutorial
+          POSTGRES_DB: iam
+          POSTGRES_PASSWORD: privatepassword
+        ports:
+          - 5432:5432
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+        
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: npm ci
+    - run: npm run build --if-present
+    - run: npm test
+    
