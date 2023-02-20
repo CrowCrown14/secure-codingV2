@@ -57,6 +57,13 @@ jobs:
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
+        DB_NAME: 'postgres'
+        DB_HOST: "127.0.0.1"
+        DB_PORT: "5432"
+        DB_USERNAME: "tutorial"
+        DB_PASSWORD: "privatepassword"
+        DB_DATABASE: "iam"
+        SERVER_PORT: "8080"
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
